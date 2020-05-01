@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Hosted by Netlify
-[Geolocation Demo](https://fervent-darwin-1a51fc.netlify.com/)
+[Look, a(t those) garage(s)! (Demo)](https://pedantic-jepsen-03d5eb.netlify.app/)
 
 ## Available Scripts
 
