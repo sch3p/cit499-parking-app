@@ -1,7 +1,7 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Hosted by Netlify
-[Look, a(t those) garage(s)! (Demo)](https://pedantic-jepsen-03d5eb.netlify.app/)
+[Look, a(t those) garage(s)!](https://pedantic-jepsen-03d5eb.netlify.app/)
 
 ## Available Scripts
 
