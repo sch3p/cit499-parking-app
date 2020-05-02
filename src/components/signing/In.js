@@ -40,7 +40,7 @@ function SignInPage() {
     return (
         <div>
             <div class="mx-auto" style={style}>
-                <h1>Fool! Please sign in or give us your soul.</h1>
+                <h1>Please sign in or give us your soul.</h1>
                     <div class="form-group">
                         <label for="inputEmail">Email Address</label>
                         <input onChange={handleChange("email")} type={"email"} class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email"/>

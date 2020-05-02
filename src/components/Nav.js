@@ -32,7 +32,7 @@ const Navi = () => {
                         alt="test React logo"
                         roundedCircle
                     /> {' '}
-                    Park that Bih'
+                    Park Car?
                 </Navbar.Brand>
             </NavLink>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

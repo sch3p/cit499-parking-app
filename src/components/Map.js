@@ -26,6 +26,21 @@ function Map() {
         lat: ''
     })
 
+    const [garage, setGarage] = React.useState({
+        gateway: {
+            x: 39.775345,
+            y: -86.169054
+        },
+        blackford: {
+            x: 39.775125,
+            y: -86.170608
+        },
+        vermont: {
+            x: 39.774049,
+            y: -86.177187
+        }
+    })
+
     // map teleport
     const [teleport, setTeleport] = React.useState({
         x: 39.773309,
