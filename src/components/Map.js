@@ -127,7 +127,8 @@ function Map() {
             <Container fluid>
                 <Row>
                     <Col>
-                        <Card className = "text-center">
+                    <h1>Good luck finding a spot. Nerd.</h1>
+                        <Card className = "text-center" text="dark">
                             <Card.Header>Location Details</Card.Header>
                             <Card.Body>
                                 <Card.Text>
@@ -143,25 +144,6 @@ function Map() {
                             </Card.Body>
                         </Card>
                         <br/>
-                        <Row>
-                            <Col>
-                                <div>
-                                    <h4 className="text-center">Teleportation Devices</h4>
-                                    <Button variant = "danger" size = "lg" onClick = { () => setTeleport({x: 39.773285, y: -86.174703})} block>IUPUI Campus</Button>
-                                    <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.652289, y: -73.756066})} block>Albany, New York</Button>
-                                    <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 47.605057, y: -122.331554})} block>Seattle, Washington</Button>
-                                    <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.279873, y: -83.742800})} block>Ann Arbor, Michigan</Button>
-                                    <br/>
-                                    <Form block>
-                                            <FormControl type="number" name="long" placeholder="Longitude" onChange={handleFormChange} required/>
-                                            <FormControl type="number" name="lat" placeholder="Latitude" onChange={handleFormChange} required/>
-                                            <br/>
-                                            <Button variant="outline-success" onClick={updateFormData}>Teleport</Button>
-                                            <br/>
-                                    </Form>
-                                </div>
-                            </Col>
-                        </Row>
                     </Col>
                     <Col>
                         <div style={{height: "600px", width: "600px", margin: "auto"}}>
@@ -176,6 +158,25 @@ function Map() {
 
                             </GoogleMapReact>
                         </div>
+                    </Col>
+                    <Col>
+                        <Col>
+                            <div>
+                                <h4 className="text-center">Teleportation Devices</h4>
+                                <Button variant = "danger" size = "lg" onClick = { () => setTeleport({x: 39.773285, y: -86.174703})} block>IUPUI Campus</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.652289, y: -73.756066})} block>Albany, New York</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 47.605057, y: -122.331554})} block>Seattle, Washington</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.279873, y: -83.742800})} block>Ann Arbor, Michigan</Button>
+                                <br/>
+                                <Form block>
+                                        <FormControl type="number" name="long" placeholder="Longitude" onChange={handleFormChange} required/>
+                                        <FormControl type="number" name="lat" placeholder="Latitude" onChange={handleFormChange} required/>
+                                        <br/>
+                                        <Button variant="outline-success" onClick={updateFormData}>Teleport</Button>
+                                        <br/>
+                                </Form>
+                            </div>
+                        </Col>
                     </Col>
                 </Row>
             </Container>

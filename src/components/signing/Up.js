@@ -95,7 +95,7 @@ function SignUpPage() {
                         })}/>
                         <br/>{errors.name && <p>Must be the same password!</p>}
                     </div>
-                    <button onClick={onSubmit} class="btn btn-primary">Submit</button>
+                    <button onClick={onSubmit} class="btn btn-primary">Give }:)</button>
                 {/* {signedIn ? <Redirect to = {"/user"}/> : <p>Please register your soul to continue..</p>} */}
             </div>
         </div>
