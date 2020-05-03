@@ -1,135 +1,90 @@
 // require('dotenv').config();
-import React from 'react';
-import { Button, Container, Row, Col, Card, Form, FormControl} from 'react-bootstrap';
-
-// Mapbox Viewport
-// import ReactMapGL, {NavigationControl} from 'react-map-gl';
+import React, { useState } from 'react';
+import { Button, Container, Row, Col, Card} from 'react-bootstrap';
 
 // Google Map React
 import GoogleMapReact from 'google-map-react';
-import Circle from './Circle';
+// import Circle from './Circle';
+import Marker from './Marker';
+
+import {usePosition} from '../hooks/getPosition';
+import { Geofence } from './GeoFence';
+import InfoName from './InfoName';
+
 
 function Map() {
 
-    // holding X,Y coords
-    const [position, setPosition] = React.useState({});
-
     // error handling
-    const [error, setError] = React.useState(null);
+    const [error, setError] = useState(null);
 
     // hitbox color
-    const [color, setColor] = React.useState("red");
+    // const [color, setColor] = useState("red");
 
-    // handle form data
-    const [formData, setFormData] = React.useState({
-        long: '',
-        lat: ''
-    })
+    const [filter, toggleFilter] = useState(false);
 
-    const [garage, setGarage] = React.useState({
-        gateway: {
-            x: 39.775345,
-            y: -86.169054
-        },
-        blackford: {
-            x: 39.775125,
-            y: -86.170608
-        },
-        vermont: {
-            x: 39.774049,
-            y: -86.177187
-        }
-    })
+    const [inGarage, setInGarage] = useState({})
+
+    const position = usePosition();
+
+    // all coords for markers listed on map
+    const markerLocations = {
+        gatewayCoords : [39.775345, -86.169054],
+        blackfordCoords : [39.775125, -86.170608],
+        vermontCoords : [39.774049, -86.177187],
+        barnhillCoords : [39.772540, -86.178207],
+        riverwalkCoords : [39.769973, -86.173694]
+    }
+
+    // filter out only et/it garages on map
+    const filterMarkerLocations = Object.fromEntries(Object.entries(markerLocations).filter(entry => {
+        if(filter) {
+            return (entry[0] === 'gatewayCoords' || entry[0] === 'blackfordCoords');
+        } else return true;
+    }))
+
+    const insideGarage = (name, inside) => {
+        setInGarage({
+            ...inGarage,
+            [name]: inside
+        })
+    }
+
+    const defaultCoords = [39.773309, -86.174698]
 
     // map teleport
-    const [teleport, setTeleport] = React.useState({
-        x: 39.773309,
-        y: -86.174698, 
-    });
-
-    const handleFormChange = (event) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-        })
-    }
-
-    const updateFormData = (event) => {
-        event.preventDefault();
-        setTeleport({
-            x: formData.long,
-            y: formData.lat
-        })
-    }
-
-    // mapbox viewport
-    // const [viewport, setViewport] = React.useState({
-    //     width: 300,
-    //     height: 300,
-    //     latitude: 39.802010,
-    //     longitude: -86.203630,
-    //     zoom: 15
-    // });
+    const [teleport, setTeleport] = useState(defaultCoords);
 
     // on arrival
-    const [arrive, setArrive] = React.useState(false);
+    // const [arrive, setArrive] = React.useState(false);
 
-    let posXmin = -86.20392;
-    let posXmax = -86.20339;
-    let posYmin = 39.80170;
-    let posYmax = 39.80206;
+    const camelToName = (camelCase) => camelCase
+        .replace(/([A-Z])/g, (match) => ` ${match}`)
+        .replace(/^./, (match) => match.toUpperCase());
 
-    // let posXmax = -86.2026
-    // let posYmax = 39.807
+    const mapMarkers = Object.entries(filterMarkerLocations).map( ([name, [lat, long]]) => {
+        const fence = new Geofence(lat, long, .0001);
+        
+        return <Marker
+                    lat = {lat}
+                    lng = {long}
+                    name = {camelToName(name)}
+                    inside = {fence.inside(position.latitude, position.longitude)}
+                    isInside = {insideGarage}
+                />
+    });
 
-    // watcher functions -- passing in params from coords object
-    // https://www.w3schools.com/html/html5_geolocation.asp
-    const onChange = ({coords}) => {
-        setPosition({
-            x: coords.longitude.toFixed(5),
-            y: coords.latitude.toFixed(5),
-            z: coords.altitude,
-            accuracy: coords.accuracy
-        });
-
-        // change hitbox color based on location range
-        if ((coords.longitude >= posXmin && coords.longitude <= posXmax) && (coords.latitude >= posYmin && coords.latitude <= posYmax)) {
-            setColor("success");
-            setArrive(true);
-        } else {
-            setColor("danger");
-            setArrive(false);
+    const info = Object.entries(insideGarage).map(([name, inside]) => {
+        if(inside) {
+            const lastIndex = name.lastIndexOf( ' ' );
+            const garageName = name.substring(0, lastIndex);
+            return <InfoName name={ garageName }/>;
         }
-    }
+    });
 
-    const onError = (error) => {
-        setError(error.message);
+    const handleFilterToggle = event => {
+        toggleFilter( event.target.checked )
     };
 
-    const options = {
-        enableHighAccuracy: true
-    }
-
-    // constantly checking for location to use in location
-    React.useEffect( () => {
-
-        const geo = navigator.geolocation;
-
-        if (!geo) {
-            setError("Geolocation not working");
-            // stop running if not working
-            return;
-        }
-
-        // grab current geo position
-        let watcher = geo.watchPosition(onChange, onError, options);
-
-        // prevent memory leaks
-        return () => geo.clearWatch(watcher);
-
-        // depends
-        // eslint-disable-next-line
-    }, []);
 
     const center = {
         width: "50%",
@@ -137,60 +92,43 @@ function Map() {
         padding: "20px",
     }
 
+    // const arrived = false;
+
     return (
         <div style = {center}>
+            <h1>Good luck finding a spot. Nerd.</h1><br/>
             <Container fluid>
                 <Row>
                     <Col>
-                    <h1>Good luck finding a spot. Nerd.</h1>
-                        <Card className = "text-center" text="dark">
-                            <Card.Header>Location Details</Card.Header>
-                            <Card.Body>
-                                <Card.Text>
-                                    <p>Longitude: {position.x === null ? "Unable to locate" : position.x}</p>
-                                    <p>Latitude: {position.y === null ? "Unable to locate" : position.y}</p> 
-                                    <p>Accuracy: {position.accuracy === null ? "No accuracy info" : position.accuracy}</p>
-                                    <p>Altitude: {position.altitude}</p>
-
-                                    {error}
-
-                                    <Button variant = {color}>{arrive ? "Arrived!" : "Not there yet."}</Button>
-                                </Card.Text>
-                            </Card.Body>
-                        </Card>
                         <br/>
+                        <div>
+                                <h4 className="text-center">Teleportation Devices</h4>
+                                <input type="checkbox" onClick={ event => handleFilterToggle(event)} id="filter" name="filter" value="filter"/>
+                                <label for="filter">Filter by IT/ET</label>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport( markerLocations['gatewayCoords']) } block>Gateway Garage</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport( markerLocations['vermontCoords']) } block>Vermont Garage</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport( markerLocations['blackfordCoords']) } block>Blackford Garage</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport( markerLocations['barnhillCoords']) } block>Barnhill Garage</Button>
+                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport( markerLocations['riverwalkCoords']) } block>Riverwalk Garage</Button>
+                                <br/>
+                            </div>
                     </Col>
                     <Col>
                         <div style={{height: "600px", width: "600px", margin: "auto"}}>
                             <GoogleMapReact
                                 bootstrapURLKeys = {{key: process.env.REACT_APP_GMToken}}
                                 // defaultCenter = {[teleport.x, teleport.y]}
-                                defaultZoom = {13}
-                                center = {[teleport.x, teleport.y]}
+                                defaultZoom = {15.5}
+                                center = {teleport}
                             >
-
-                                <Circle lat={teleport.x} lng={teleport.y}/>
-
+                                {mapMarkers}
                             </GoogleMapReact>
                         </div>
+                        
                     </Col>
                     <Col>
                         <Col>
-                            <div>
-                                <h4 className="text-center">Teleportation Devices</h4>
-                                <Button variant = "danger" size = "lg" onClick = { () => setTeleport({x: 39.773285, y: -86.174703})} block>IUPUI Campus</Button>
-                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.652289, y: -73.756066})} block>Albany, New York</Button>
-                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 47.605057, y: -122.331554})} block>Seattle, Washington</Button>
-                                <Button variant = "primary" size = "lg" onClick = { () => setTeleport({x: 42.279873, y: -83.742800})} block>Ann Arbor, Michigan</Button>
-                                <br/>
-                                <Form block>
-                                        <FormControl type="number" name="long" placeholder="Longitude" onChange={handleFormChange} required/>
-                                        <FormControl type="number" name="lat" placeholder="Latitude" onChange={handleFormChange} required/>
-                                        <br/>
-                                        <Button variant="outline-success" onClick={updateFormData}>Teleport</Button>
-                                        <br/>
-                                </Form>
-                            </div>
+                        {info}
                         </Col>
                     </Col>
                 </Row>
