@@ -96,7 +96,7 @@ function Map() {
 
     return (
         <div style = {center}>
-            <h1>Good luck finding a spot. Nerd.</h1><br/>
+            <h1>* good luck finding a spot. nerd.</h1><br/>
             <Container fluid>
                 <Row>
                     <Col>
