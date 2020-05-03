@@ -114,7 +114,7 @@ function Map() {
                             </div>
                     </Col>
                     <Col>
-                        <div style={{height: "600px", width: "600px", margin: "auto"}}>
+                        <div style={{height: "600px", width: "600px", margin: "auto", borderStyle: "double", borderWidth: "20px"}}>
                             <GoogleMapReact
                                 bootstrapURLKeys = {{key: process.env.REACT_APP_GMToken}}
                                 // defaultCenter = {[teleport.x, teleport.y]}
