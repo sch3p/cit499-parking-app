@@ -127,9 +127,7 @@ function Map() {
                         
                     </Col>
                     <Col>
-                        <Col>
                         {info}
-                        </Col>
                     </Col>
                 </Row>
             </Container>
